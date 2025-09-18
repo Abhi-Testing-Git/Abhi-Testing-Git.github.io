@@ -28,6 +28,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
 import { Progress } from './components/ui/progress';
 import { Alert, AlertDescription } from './components/ui/alert';
 import { toast } from 'sonner';
+import { Toaster } from './components/ui/sonner';
 import './App.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
