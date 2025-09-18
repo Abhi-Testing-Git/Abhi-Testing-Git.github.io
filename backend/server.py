@@ -275,7 +275,7 @@ async def get_dashboard_stats():
     
     # Count overdue items (not revised in 7+ days)
     seven_days_ago = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
-    seven_days_ago = (seven_days_ago - pd.Timedelta(days=7)).isoformat()
+    seven_days_ago = (seven_days_ago - timedelta(days=7)).isoformat()
     
     overdue_count = await db.subtopics.count_documents({
         "$or": [
