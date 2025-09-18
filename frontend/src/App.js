@@ -724,6 +724,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/subjects" element={<SubjectManager />} />
         </Routes>
+        <Toaster />
       </BrowserRouter>
     </div>
   );
