@@ -24,6 +24,11 @@ db = client[os.environ['DB_NAME']]
 app = FastAPI(title="RevisionPro API", version="1.0.0")
 api_router = APIRouter(prefix="/api")
 
+# Add your routes to the router instead of directly to app
+@api_router.get("/")
+async def root():
+    return {"message": "RevisionPro API is running successfully!"}
+
 # Enums
 class DifficultyLevel(str, Enum):
     EASY = "Easy"
