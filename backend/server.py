@@ -348,73 +348,9 @@ async def get_ai_recommendations(limit: int = 5):
                 "days_since_revision": days_since_revision
             })
         
-        # AI-powered recommendations
-        ai_key = os.environ.get('EMERGENT_LLM_KEY')
-        if not ai_key:
-            # Fallback to basic algorithm
-            return _basic_recommendations(study_data, limit)
-        
-        chat = LlmChat(
-            api_key=ai_key,
-            session_id="revision_recommendations",
-            system_message="""You are an AI tutor specializing in spaced repetition and personalized learning schedules. 
-            Analyze student data and provide intelligent revision recommendations based on:
-            1. Spaced repetition principles
-            2. Difficulty levels and past performance
-            3. Time since last revision
-            4. Learning efficiency patterns
-            
-            Return recommendations in JSON format with priority scores (0-10) and clear reasoning."""
-        ).with_model("anthropic", "claude-3-5-sonnet-20241022")
-        
-        prompt = f"""Analyze this study data and recommend the top {limit} topics for revision:
-
-{study_data}
-
-Consider:
-- Items not studied in 7+ days get higher priority
-- "Struggled" items need more frequent review
-- "Not Started" items should be introduced gradually  
-- "Mastered" items need longer intervals
-- Harder topics may need more frequent review
-
-Return ONLY a JSON array of recommendations with this exact structure:
-[
-  {{
-    "subtopic_id": "id",
-    "priority_score": 8.5,
-    "reason": "Not revised in 12 days. Previous performance was 'Struggled' on Hard difficulty topic."
-  }}
-]"""
-        
-        user_message = UserMessage(text=prompt)
-        response = await chat.send_message(user_message)
-        
-        # Parse AI response
-        import json
-        try:
-            ai_recommendations = json.loads(response.strip())
-            
-            recommendations = []
-            for rec in ai_recommendations[:limit]:
-                # Find the subtopic data
-                subtopic_data = next((s for s in study_data if s['subtopic_id'] == rec['subtopic_id']), None)
-                if subtopic_data:
-                    recommendations.append(AIRecommendation(
-                        subtopic_id=rec['subtopic_id'],
-                        subtopic_name=subtopic_data['name'],
-                        topic_name=subtopic_data['topic'],
-                        subject_name=subtopic_data['subject'],
-                        priority_score=rec['priority_score'],
-                        reason=rec['reason'],
-                        days_since_revision=subtopic_data['days_since_revision']
-                    ))
-            
-            return recommendations
-            
-        except Exception as e:
-            logger.error(f"Error parsing AI response: {e}")
-            return _basic_recommendations(study_data, limit)
+        # Use basic algorithm for recommendations
+        # AI functionality temporarily disabled
+        return _basic_recommendations(study_data, limit)
             
     except Exception as e:
         logger.error(f"Error getting recommendations: {e}")
